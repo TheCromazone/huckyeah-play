@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HUCK YEAH — Ultimate, Disc Golf &amp; Goaltimate</title>
+
+<!-- viewport-fit=cover + safe-area insets so the HUD clears the notch in landscape -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0F0B">
+<meta name="application-name" content="HUCK YEAH">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="HUCK YEAH">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Play ultimate frisbee, disc golf and Goaltimate on mobile and desktop. Real rules, real rosters and San Francisco fields.">
+<link rel="icon" type="image/png" href="/huckyeah-play/assets/brand/disc-mark.png">
+<link rel="apple-touch-icon" href="/huckyeah-play/assets/brand/disc-mark.png">
+
+<style>
+  :root {
+    --safe-t: env(safe-area-inset-top, 0px);
+    --safe-r: env(safe-area-inset-right, 0px);
+    --safe-b: env(safe-area-inset-bottom, 0px);
+    --safe-l: env(safe-area-inset-left, 0px);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background: #0A0F0B;
+    color: #E8EFE7;
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    /* Keep the fixed app shell from navigating or rubber-banding. Gesture suppression
+       belongs on #gl: touch-action cannot be re-enabled by a descendant, so putting
+       `none` here makes every setup/settings scroller inert on a real phone. */
+    overscroll-behavior: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  #app { position: fixed; inset: 0; }
+
+  #gl { display: block; width: 100%; height: 100%; touch-action: none; }
+
+  /* HUD sits above the canvas and respects the notch. Pointer-transparent by default;
+     individual controls opt back in. */
+  #hud {
+    position: fixed;
+    inset: var(--safe-t) var(--safe-r) var(--safe-b) var(--safe-l);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  #boot {
+    position: fixed; inset: 0; z-index: 100;
+    display: grid; place-content: center; gap: 18px;
+    background: #0A0F0B;
+    text-align: center;
+    transition: opacity .45s ease;
+  }
+  #boot.gone { opacity: 0; pointer-events: none; }
+
+  #boot h1 {
+    margin: 0;
+    font-size: clamp(28px, 7vw, 54px);
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  #boot .bar { width: min(320px, 70vw); height: 3px; background: #1B2620; overflow: hidden; }
+  /* scaleX, not width: this bar animates while the main thread is busy compiling the
+     engine, so it must stay on the compositor and never trigger layout. */
+  #boot .bar i {
+    display: block; height: 100%; width: 100%;
+    background: #3FBF6A;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform .3s ease;
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: reduce) { #boot .bar i { transition: none; } }
+  #boot .msg { color: #74836F; font-size: 13px; min-height: 1.4em; }
+
+  noscript {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-content: center;
+    padding: 24px;
+    background: #0A0F0B;
+    text-align: center;
+  }
+</style>
+  <script type="module" crossorigin src="/huckyeah-play/assets/index-C6fRaJTo.js"></script>
+  <link rel="modulepreload" crossorigin href="/huckyeah-play/assets/three-BKkZ46Bk.js">
+  <link rel="stylesheet" crossorigin href="/huckyeah-play/assets/index-BA9ajjD9.css">
+</head>
+<body>
+
+<div id="app">
+  <canvas id="gl"></canvas>
+  <div id="hud"></div>
+</div>
+
+<div id="boot">
+  <h1>HUCK YEAH</h1>
+  <div class="bar"><i id="boot-bar"></i></div>
+  <div class="msg" id="boot-msg">Loading</div>
+</div>
+
+<noscript>HUCK YEAH needs JavaScript enabled to run the match simulation.</noscript>
+
+</body>
+</html>
